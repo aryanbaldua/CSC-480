@@ -42,12 +42,16 @@ def rank_hand(cards):
     sorted_ranks = [r for r, _ in count_and_rank]
 
     is_flush = len(set(suits)) == 1
-    unique   = sorted(set(ranks))
+    unique = sorted(set(ranks))
     is_wheel = unique == [0, 1, 2, 3, 12]
     is_straight = len(unique) == 5 and (
         unique[-1] - unique[0] == 4 or is_wheel
     )
-    top_of_straight = 3 if is_wheel else unique[-1]
+
+    if is_wheel:
+        top_of_straight = 3
+    else:
+        top_of_straight = unique[-1]
 
     if is_straight and is_flush:
         return 8, top_of_straight
@@ -122,7 +126,8 @@ class Node:
 
 
 def ucb(nd, tot, c=1.41421356237):
-    if nd.n == 0: return float("inf")
+    if nd.n == 0:
+        return float("inf")
     return nd.w / nd.n + c * math.sqrt(math.log(tot) / nd.n)
 
 
@@ -139,13 +144,20 @@ def decide(hole, board, limit=10.0, thresh=.5):
 
     while time.perf_counter() < end:
         nd = max(kids, key=lambda k: ucb(k, tot))
-        reward = 0.0 if nd.move == "fold" else rollout_once(hole, board)
+        if nd.move == "fold":
+            reward = 0.0
+        else:
+            reward = rollout_once(hole, board)
+
         nd.n += 1
         nd.w += reward
         tot += 1
 
     p = stay.w / stay.n
-    return "stay" if p >= thresh else "fold"
+    if p >= thresh:
+        return "stay"
+    else:
+        return "fold"
 
 
 class PokerBot:
@@ -162,3 +174,4 @@ if __name__ == "__main__":
     h = d.draw(2)
     b = d.draw(3)
     print("hole:", h, "board:", b, "->", PokerBot().action(h, b))
+

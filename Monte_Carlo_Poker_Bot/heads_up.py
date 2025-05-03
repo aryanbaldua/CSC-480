@@ -62,9 +62,12 @@ def run():
         print("Bot action:", bot_act)
         print("Opp action:", opp_act)
 
-        if bot_act == "fold": bot_fold = True
-        if opp_act == "fold": opp_fold = True
-        if bot_fold or opp_fold: break
+        if bot_act == "fold":
+            bot_fold = True
+        if opp_act == "fold":
+            opp_fold = True
+        if bot_fold or opp_fold:
+            break
 
     if not (bot_fold or opp_fold):
         board.append(deck.pop())
