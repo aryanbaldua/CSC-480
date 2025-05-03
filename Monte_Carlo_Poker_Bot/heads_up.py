@@ -1,7 +1,20 @@
 import random
 from itertools import combinations
-from card_info import card_to_str
+#from card_info import card_to_str
 from PokerBot import PokerBot, rank_hand
+
+SUITS = {0: "♣", 1: "♦", 2: "♥", 3: "♠"}
+RANKS = {
+     0: "2",  1: "3",  2: "4",  3: "5",
+     4: "6",  5: "7",  6: "8",  7: "9",
+     8: "10", 9: "J", 10: "Q", 11: "K", 12: "A",
+}
+
+
+def card_to_str(card: int) -> str:
+    rank = card % 13
+    suit = card // 13
+    return f"{RANKS[rank]}{SUITS[suit]}"
 
 
 def show(cs):
@@ -18,7 +31,8 @@ def best5(cs):
 
 
 def opp_stays():
-    return random.random() < .9
+    # change from 1 after testing purposes
+    return random.random() < 1.01
 
 
 def run():
@@ -61,8 +75,8 @@ def run():
         opp_rank = best5(opp_hole + board)
 
         print("\nShowdown:")
-        print(f"Bot  {show(bot_hole)} -> {bot_rank}")
-        print(f"Opp  {show(opp_hole)} -> {opp_rank}")
+        print(f"Bot  {show(bot_hole)}")
+        print(f"Opp  {show(opp_hole)}")
 
         if bot_rank > opp_rank:
             print("Hooray! The bot wins!")
